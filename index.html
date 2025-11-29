@@ -467,21 +467,41 @@
     }
 
     .social-link {
-      width: 40px;
-      height: 40px;
+      /* Increased size for better visibility/click area */
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: var(--panel);
+
+      /* Changed default look to be more prominent */
+      background: transparent;
+      /* Remove the subtle background */
+      color: var(--muted);
+      /* Use muted color as the base */
+      border: 2px solid var(--muted);
+      /* Use a thicker border with the muted color */
+      font-weight: 600;
+      /* Make the text bolder */
+
       display: flex;
       align-items: center;
       justify-content: center;
       transition: var(--transition);
-      border: 1px solid var(--panel-border);
+      font-size: 0.95rem;
+      /* Slightly larger text */
     }
 
     .social-link:hover {
+      /* Enhanced Hover Effect: Change to accent color */
       background: var(--accent);
+      /* Solid accent fill */
       color: #000;
-      transform: translateY(-3px);
+      /* Black text for contrast */
+      border-color: var(--accent);
+      /* Solid accent border */
+      transform: scale(1.1) rotate(5deg);
+      /* A more noticeable 'pop' effect */
+      box-shadow: 0 0 15px var(--accent-glow);
+      /* Add a glow */
     }
 
     /* UTILS */
@@ -712,222 +732,6 @@
       </div>
     </div>
   </footer>
-
-  <script>
-    /* ================= SCRIPT ================= */
-
-    // 1. PRELOADER
-    window.addEventListener('load', () => {
-      const p = document.getElementById('preloader');
-      setTimeout(() => {
-        p.style.opacity = '0';
-        setTimeout(() => p.remove(), 500);
-      }, 400);
-    });
-
-    // 2. THEME TOGGLE
-    const themeBtn = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    html.setAttribute('data-theme', savedTheme);
-
-    themeBtn.addEventListener('click', () => {
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-
-    // 3. BURGER MENU
-    const burger = document.getElementById('burger');
-    const navLinks = document.querySelector('.nav-links');
-    burger.addEventListener('click', () => navLinks.classList.toggle('active'));
-
-    // 4. TEXT ANIMATION
-    const roles = ["Game Developer", "Java Enthusiast", "Problem Solver"];
-    let rIndex = 0, cIndex = 0, isDeleting = false;
-    const el = document.querySelector('.animated-text');
-
-    function typeEffect() {
-      const current = roles[rIndex];
-      if (isDeleting) {
-        el.textContent = current.substring(0, cIndex - 1);
-        cIndex--;
-      } else {
-        el.textContent = current.substring(0, cIndex + 1);
-        cIndex++;
-      }
-
-      if (!isDeleting && cIndex === current.length) {
-        isDeleting = true;
-        setTimeout(typeEffect, 2000); // Pause at end of word
-      } else if (isDeleting && cIndex === 0) {
-        isDeleting = false;
-        rIndex = (rIndex + 1) % roles.length;
-        setTimeout(typeEffect, 300);
-      } else {
-        setTimeout(typeEffect, isDeleting ? 50 : 100);
-      }
-    }
-    typeEffect();
-
-    // 5. PROJECTS DATA & RENDER (UPDATED WITH YOUR EXACT FILE NAMES)
-    const works = [
-      {
-        title: "Fluid Resistance Sim",
-        type: 'video',
-        tags: ["Physics", "Java"],
-        src: "assets/fluid resistance simulator.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Fluid+Sim"
-      },
-      {
-        title: "Visual Path Finder",
-        type: 'video',
-        tags: ["Algorithms", "AI"],
-        src: "assets/path finder.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Path+Finder"
-      },
-      {
-        title: "Core Game Logic",
-        type: 'video',
-        tags: ["Game Dev", "System Design"],
-        src: "assets/game logic.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Game+Logic"
-      },
-      {
-        title: "Interactive Quiz App",
-        type: 'video',
-        tags: ["Web", "JS"],
-        src: "assets/Quiz app.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Quiz+App"
-      },
-      {
-        title: "Gravity Simulator",
-        type: 'video',
-        tags: ["Physics", "Simulation"],
-        src: "assets/gravitational pull simulator.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Gravity+Sim"
-      },
-      {
-        title: "Particle Repulsion",
-        type: 'video',
-        tags: ["Canvas", "Math"],
-        src: "assets/repulsion simulation.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Repulsion"
-      },
-      {
-        title: "Java RPG Prototype",
-        type: 'video',
-        tags: ["Java", "OOP"],
-        src: "assets/Java Game.mp4",
-        poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Java+RPG"
-      }
-    ];
-
-    const grid = document.getElementById('projectsGrid');
-
-    works.forEach(w => {
-      const tagsHtml = w.tags.map(t => `<span class="project-tag">#${t}</span>`).join('');
-      const card = document.createElement('article');
-      card.className = 'project-card';
-
-      let mediaContent = '';
-      if (w.type === 'video') {
-        // Data-src used for lazy loading the video file path
-        mediaContent = `
-            <div class="video-wrapper">
-                <video controls preload="metadata" poster="${w.poster}" data-src="${w.src}" playsinline muted loop></video>
-            </div>
-        `;
-      } else {
-        // Fallback/Placeholder if an asset is missing
-        mediaContent = `<div class="video-wrapper"><img src="${w.src}" alt="${w.title}" style="width:100%;height:100%;object-fit:cover;transition:0.5s;"></div>`;
-      }
-
-      card.innerHTML = `
-        ${mediaContent}
-        <div class="project-info">
-          <div class="project-tags">${tagsHtml}</div>
-          <h3 class="project-title">${w.title}</h3>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    // Lazy Load & Auto-Hover Play (Only for Videos)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const v = e.target.querySelector('video');
-          if (v && v.dataset.src) {
-            v.src = v.dataset.src;
-            v.removeAttribute('data-src');
-          }
-          observer.unobserve(e.target);
-        }
-      })
-    }, { rootMargin: "200px" });
-
-    document.querySelectorAll('.project-card').forEach(c => {
-      observer.observe(c);
-      const v = c.querySelector('video');
-
-      if (v) {
-        // Optional: Play on hover (desktop)
-        c.addEventListener('mouseenter', () => {
-          if (v.readyState >= 2) {
-            v.play().catch(() => { });
-          } else {
-            // If video hasn't loaded, try to load it fully now
-            v.load();
-            v.addEventListener('loadeddata', () => v.play().catch(() => { }), { once: true });
-          }
-        });
-        c.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
-      }
-    });
-
-
-    // 6. CANVAS BACKGROUND (Subtle Particles)
-    const canvas = document.getElementById('hero-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-
-    function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const particles = Array.from({ length: 60 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      size: Math.random() * 2
-    }));
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-      const style = getComputedStyle(document.body);
-      ctx.fillStyle = style.getPropertyValue('--accent') || '#1db954';
-
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
-
-        ctx.globalAlpha = 0.2;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-  </script>
 
   <script src="script.js"></script>
 
