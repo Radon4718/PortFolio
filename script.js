@@ -46,17 +46,17 @@ window.addEventListener("load", () => {
             tags: ["Physics", "Java", "Processing"],
             src: "assets/fluid resistance simulator.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Fluid+Sim",
-            github: "https://github.com/Radon4718/FluidSim",
+            github: "https://github.com/Radon4718/Processing",
             demo: ""
         },
         {
             title: "Visual Path Finder",
-            description: "An interactive web app illustrating pathfinding algorithms (A*, Dijkstra's) on a grid.",
+            description: "A visualizer for pathfinding algorithms like A* and Dijkstra's, built with Java.",
             type: 'video',
             tags: ["Algorithms", "Java", "Data Structures"],
             src: "assets/Algorithm Visualizer.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Path+Finder",
-            github: "https://github.com/Radon4718/PathFinder",
+            github: "https://github.com/Radon4718/Algorithm-Visualizer",
             demo: ""
         },
         {
@@ -66,7 +66,7 @@ window.addEventListener("load", () => {
             tags: ["Game Dev", "CPP", "System Design"],
             src: "assets/game logic.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Game+Logic",
-            github: "https://github.com/Radon4718/GodotGameLogic",
+            github: "",
             demo: ""
         },
         {
@@ -76,7 +76,7 @@ window.addEventListener("load", () => {
             tags: ["Java", "DataBase", "SQL"],
             src: "assets/Quiz app.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Quiz+App",
-            github: "https://github.com/Radon4718/QuizApp",
+            github: "https://github.com/Radon4718/Quiz_App",
             demo: "" // Use your real URL
         },
         {
@@ -86,7 +86,7 @@ window.addEventListener("load", () => {
             tags: ["Physics", "Simulation", "Java"],
             src: "assets/gravitational pull simulator.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Gravity+Sim",
-            github: "https://github.com/Radon4718/GravitySim",
+            github: "https://github.com/Radon4718/Processing",
             demo: ""
         },
         {
@@ -96,17 +96,17 @@ window.addEventListener("load", () => {
             tags: ["Processing", "Simulation", "Java"],
             src: "assets/repulsion simulation.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Repulsion",
-            github: "https://github.com/Radon4718/RepulsionSim",
+            github: "https://github.com/Radon4718/Processing",
             demo: ""
         },
         {
-            title: "Java RPG Prototype",
-            description: "A simple command-line RPG prototype demonstrating Object-Oriented Programming (OOP) principles.",
+            title: "Java 2d platformer game",
+            description: "A 2d platformer game built in Java using OOP principles, featuring player movement, enemies, and level design.",
             type: 'video',
             tags: ["Java", "OOP", "Game Dev"],
             src: "assets/Java Game.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Java+RPG",
-            github: "https://github.com/Radon4718/JavaRPG",
+            github: "https://github.com/Radon4718/PlatformerGameInJava-master",
             demo: ""
         },
         {
@@ -116,7 +116,7 @@ window.addEventListener("load", () => {
             tags: ["HTML", "CSS", "JavaScript", "Web"],
             src: "assets/PortFolio.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
-            github: "https://github.com/Radon4718/JavaRPG",
+            github: "https://github.com/Radon4718/PortFolio",
             demo: ""
         },
         {
@@ -126,7 +126,7 @@ window.addEventListener("load", () => {
             tags: ["Java", "Processing", "Logic Design"],
             src: "assets/vid fish.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
-            github: "https://github.com/Radon4718/JavaRPG",
+            github: "https://github.com/Radon4718/Processing",
             demo: ""
         },
         {
@@ -136,7 +136,7 @@ window.addEventListener("load", () => {
             tags: ["HTTP", "Java", "Weather API", "Web"],
             src: "assets/weather app.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
-            github: "https://github.com/Radon4718/JavaRPG",
+            github: "https://github.com/Radon4718/Weather_Information_app",
             demo: ""
         },
         {
@@ -146,7 +146,17 @@ window.addEventListener("load", () => {
             tags: ["HTTP", "Java", "API", "Web"],
             src: "assets/web crawler.mp4",
             poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
-            github: "https://github.com/Radon4718/JavaRPG",
+            github: "",
+            demo: ""
+        },
+        {
+            title: "Godot Enviroment Simulator",
+            description: "A Godot-based simulation modeling fish behavior in response to environmental factors using GDScript.",
+            type: 'video',
+            tags: ["GDScript", "Godot", "Game dev"],
+            src: "assets/Godot.mp4",
+            poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
+            github: "https://github.com/Radon4718/Godot_Enviroment_simuplation",
             demo: ""
         }
     ];
