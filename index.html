@@ -389,27 +389,106 @@
       border-radius: var(--radius);
       overflow: hidden;
       transition: var(--transition);
-      group: project;
+      position: relative;
+      /* Needed for absolute positioning of elements */
     }
 
     .project-card:hover {
       transform: translateY(-8px);
-      border-color: var(--muted);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      border-color: var(--accent);
+      /* Changed hover color to accent */
+      box-shadow: 0 10px 40px var(--accent-glow);
+    }
+
+    /* Project Tags Styling Enhancement */
+    .project-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 0.5rem;
+      /* Reduced margin */
+      flex-wrap: wrap;
+    }
+
+    .project-tag {
+      font-size: 0.85rem;
+      /* Increased size for readability */
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: var(--transition);
+      text-transform: none;
+      /* Removed unnecessary uppercase */
+      letter-spacing: normal;
+      font-weight: 500;
+    }
+
+    .project-card:hover .project-tag {
+      background: rgba(29, 185, 84, 0.08);
+      color: var(--accent);
+    }
+
+    /* Project Description */
+    .project-description {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Project Action Buttons (Inherit base btn style but adjust size) */
+    .project-actions .btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      margin-left: 0;
+    }
+
+    /* New Filter Button Styles */
+    .filter-btn {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      /* ⭐ Critical for mobile/small displays: ensure they are inline-block ⭐ */
+      display: inline-block;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 4px 15px var(--accent-glow);
     }
 
     .video-wrapper {
       position: relative;
       width: 100%;
-      aspect-ratio: 16/9;
+      /* ⭐ FIX 1: Use padding-top for a consistent 16:9 aspect ratio (100% / 16 * 9 = 56.25%) ⭐ */
+      padding-top: 56.25%;
       background: #000;
       overflow: hidden;
     }
 
     .video-wrapper video {
+      /* ⭐ FIX 2: Position absolutely to fill the padded wrapper ⭐ */
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      /* Ensures video covers the area without distortion */
       transition: 0.5s;
       opacity: 0.9;
     }
@@ -419,31 +498,7 @@
       transform: scale(1.02);
     }
 
-    .project-info {
-      padding: 1.5rem;
-    }
-
-    .project-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-
-    .project-tags {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .project-tag {
-      font-size: 0.75rem;
-      color: var(--accent);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    /* Keep existing styles below... */
 
     /* ===== FOOTER ===== */
     footer {
@@ -693,6 +748,7 @@
           <div class="tech-tags">
             <span class="tag">HTML5</span>
             <span class="tag">CSS3</span>
+            <span class="tag">JavaScript</span>
             <span class="tag">React Basic</span>
           </div>
         </div>
@@ -702,6 +758,7 @@
           <div class="tech-tags">
             <span class="tag">Godot</span>
             <span class="tag">Processing(java based sketching tool)</span>
+            <span class="tag">Java Swing</span>
           </div>
         </div>
       </div>
@@ -712,8 +769,17 @@
     <div class="container">
       <div class="section-header">
         <h2>Selected Works</h2>
-        <p>A collection of simulations, games, and applications.</p>
+        <p>A collection of simulations, games, and applications showcasing diverse skills.</p>
       </div>
+
+      <div id="projectFilters" style="margin-bottom: 2rem; display: flex; flex-wrap: wrap; gap: 10px;">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="Web">Web Apps</button>
+        <button class="filter-btn" data-filter="Java">Java / Processing</button>
+        <button class="filter-btn" data-filter="Game Dev">Game Dev / Sim</button>
+        <button class="filter-btn" data-filter="Algorithms">Algorithms</button>
+      </div>
+
       <div class="projects-grid" id="projectsGrid">
       </div>
     </div>
