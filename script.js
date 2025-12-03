@@ -1,4 +1,12 @@
 window.addEventListener("load", () => {
+    // === GLOBAL CANVAS VARIABLES ===
+    let width = window.innerWidth, height = window.innerHeight;
+    let accentColor = getComputedStyle(document.body).getPropertyValue('--accent') || '#1db954';
+    const getAccentRGBA = (alpha = 1) => {
+        const rgb = accentColor.replace('#', '').match(/.{2}/g).map(h => parseInt(h, 16));
+        return `rgba(${rgb.join(',')},${alpha})`;
+    }
+
     // === 1. Preloader ===
     const p = document.getElementById('preloader');
     setTimeout(() => { p.style.opacity = '0'; setTimeout(() => p.remove(), 500); }, 400);
@@ -6,7 +14,6 @@ window.addEventListener("load", () => {
     // === 2. Theme Toggle ===
     const themeBtn = document.getElementById('themeToggle');
     const html = document.documentElement;
-    let accentColor = getComputedStyle(document.body).getPropertyValue('--accent') || '#1db954';
     html.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
     themeBtn.addEventListener('click', () => {
         const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -14,29 +21,199 @@ window.addEventListener("load", () => {
         localStorage.setItem('theme', next);
         accentColor = getComputedStyle(document.body).getPropertyValue('--accent') || '#1db954';
     });
-    const getAccentRGBA = (alpha = 1) => {
-        const rgb = accentColor.replace('#', '').match(/.{2}/g).map(h => parseInt(h, 16));
-        return `rgba(${rgb.join(',')},${alpha})`;
-    }
 
     // === 3. Burger Menu ===
     document.getElementById('burger').addEventListener('click', () => document.querySelector('.nav-links').classList.toggle('active'));
 
-    // === 4. Text Animation ===
-    const roles = ["Game Developer", "Java Enthusiast", "Problem Solver"];
-    let rIndex = 0, cIndex = 0, isDeleting = false;
-    const el = document.querySelector('.animated-text');
-    function typeEffect() {
-        const current = roles[rIndex];
-        el.textContent = isDeleting ? current.substring(0, cIndex--) : current.substring(0, cIndex++);
-        if (!isDeleting && cIndex === current.length) setTimeout(() => isDeleting = true, 2000);
-        else if (isDeleting && cIndex === 0) { isDeleting = false; rIndex = (rIndex + 1) % roles.length; }
-        setTimeout(typeEffect, isDeleting ? 50 : 100);
+// ----------------------------------------------------------------------
+// === 4. Particle Morph Text Animation (Core Logic) ===
+const roles = ["Software Engineer", "Java Enthusiast", "Problem Solver"];
+let roleIndex = 0;
+const TEXT_PARTICLE_COUNT = 2000;
+const TARGET_SPRING = 0.05;
+const TARGET_DRAG = 0.9;
+let isTransitioning = false; 
+
+// Center point for the circular dispersal
+const CENTER_X = width / 2;
+const CENTER_Y = height / 2;
+
+
+// We'll use a new canvas for the morphing text
+const morphCanvas = document.createElement('canvas'); // ...
+morphCanvas.style.position = 'absolute';
+morphCanvas.style.top = '0';
+morphCanvas.style.left = '0';
+morphCanvas.style.pointerEvents = 'none';
+document.getElementById('hero').appendChild(morphCanvas); // Append to hero section
+const morphCtx = morphCanvas.getContext('2d');
+
+const textParticles = [];
+let targetPositions = []; 
+
+function resizeMorphCanvas() {
+    width = window.innerWidth; 
+    height = window.innerHeight; 
+    morphCanvas.width = width;
+    morphCanvas.height = height;
+    // Recalculate positions on resize if not transitioning
+    if (textParticles.length > 0 && !isTransitioning) {
+        // Re-center the target positions based on the new dimensions
+        morphText(roles[roleIndex - 1 < 0 ? roles.length - 1 : roleIndex - 1], false); 
     }
-    typeEffect();
+}
+resizeMorphCanvas();
+
+// --- Particle Generation ---
+for (let i = 0; i < TEXT_PARTICLE_COUNT; i++) {
+    textParticles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: 0, vy: 0,
+        tx: Math.random() * width, // target X
+        ty: Math.random() * height, // target Y
+        dx: 0, // dispersal X (temporary target for transition)
+        dy: 0, // dispersal Y
+        size: Math.random() * 1.5 + 0.5,
+        color: getAccentRGBA(0.9)
+    });
+}
+
+// --- Text Sampling Function ---
+function getTargetPositions(text) {
+    // Dynamically adjust font size based on screen width
+    const fontSize = Math.min(width / 8, 100); 
+    
+    morphCtx.clearRect(0, 0, width, height);
+    morphCtx.fillStyle = 'white';
+    morphCtx.font = `900 ${fontSize}px Outfit, sans-serif`;
+    morphCtx.textAlign = 'center';
+
+    const textMetrics = morphCtx.measureText(text);
+    const textHeight = fontSize;
+
+    const xOffset = width / 2;
+    // Position vertically where the original h1 was (roughly center hero, slightly up)
+    const yOffset = height / 2 - 300 + textHeight / 3 ; 
+
+    morphCtx.fillText(text, xOffset, yOffset);
+
+    const data = morphCtx.getImageData(0, 0, width, height).data;
+    const positions = [];
+    const density = 4; // Higher density samples fewer points, improving performance
+
+    for (let y = 0; y < height; y += density) {
+        for (let x = 0; x < width; x += density) {
+            const index = (y * width + x) * 4;
+            if (data[index + 3] > 0) {
+                positions.push({ x: x, y: y });
+            }
+        }
+    }
+    
+    morphCtx.clearRect(0, 0, width, height);
+    return positions;
+}
+
+// --- Morphing Function ---
+function morphText(text, setDispersal = false) {
+    targetPositions = getTargetPositions(text);
+    
+    textParticles.forEach((p, i) => {
+        // Find the next text target position
+        const finalTarget = targetPositions[i % targetPositions.length];
+        
+        // 1. Set Dispersal Target (circular outwards)
+        if (setDispersal) {
+            // Calculate angle and push outwards from the center of the screen
+            const angle = Math.atan2(p.y - CENTER_Y, p.x - CENTER_X);
+            const randomDistance = 150 + Math.random() * 150; 
+            p.dx = CENTER_X + Math.cos(angle) * randomDistance;
+            p.dy = CENTER_Y + Math.sin(angle) * randomDistance;
+        } 
+        
+        // 2. Set Final Target (the new word shape)
+        if (finalTarget) {
+            p.tx = finalTarget.x + (Math.random() - 0.5) * 4; 
+            p.ty = finalTarget.y + (Math.random() - 0.5) * 4;
+        } else {
+            p.tx = width / 2 + (Math.random() - 0.5) * 50;
+            p.ty = height + 100; // Send extras off-screen
+        }
+    });
+
+    roleIndex = (roleIndex + 1) % roles.length;
+}
+
+// --- Animation Loop Control ---
+function startMorphLoop() {
+    const nextRole = roles[roleIndex % roles.length];
+    
+    // 1. Start the DISPERSAL (circular transition)
+    isTransitioning = true;
+    morphText(nextRole, true); // Set dispersal targets (p.dx, p.dy)
+
+    // 2. Wait for scattering (1000ms)
+    setTimeout(() => {
+        // 3. Set the final new word targets
+        morphText(nextRole, false); // Set final text targets (p.tx, p.ty)
+    }, 1000); 
+
+    // 4. End transition state after the new word has formed a bit (1800ms)
+    setTimeout(() => {
+        isTransitioning = false;
+    }, 1800);
+
+    // 5. Schedule the next loop (Total time for one cycle)
+    // ⬆️ MODIFIED LINE: Increased from 5000ms to 8000ms
+    setTimeout(startMorphLoop, 8000); 
+}
+window.setTimeout(startMorphLoop, 1000); 
+
+// --- Particle Update & Draw Function ---
+function drawMorphParticles() {
+    // Clear the morph canvas
+    morphCtx.clearRect(0, 0, width, height);
+
+    textParticles.forEach(p => {
+        let targetX, targetY;
+        
+        // Select the target based on the transition state
+        if (isTransitioning) {
+            targetX = p.dx; // Move towards the temporary dispersal target
+            targetY = p.dy;
+        } else {
+            targetX = p.tx; // Move towards the final text target
+            targetY = p.ty;
+        }
+        
+        // Calculate the difference vector to the CURRENT target
+        const dx = targetX - p.x;
+        const dy = targetY - p.y;
+        
+        // Apply physics
+        p.vx += dx * TARGET_SPRING;
+        p.vy += dy * TARGET_SPRING;
+        
+        p.vx *= TARGET_DRAG;
+        p.vy *= TARGET_DRAG;
+        
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Draw the particle
+        // Note: The color is set once during initialization, but using getAccentRGBA(0.9) 
+        // dynamically here ensures theme changes are respected.
+        morphCtx.fillStyle = getAccentRGBA(0.9); 
+        morphCtx.beginPath();
+        morphCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        morphCtx.fill();
+    });
+}
+// ----------------------------------------------------------------------
 
     // === 5. Projects Render with Lazy Videos & Filtering ===
-
+    
     // ⭐ ENHANCED PROJECT DATA STRUCTURE ⭐
     const works = [
         {
@@ -160,16 +337,18 @@ window.addEventListener("load", () => {
             demo: ""
         }
     ];
+    // ⭐ END FULL PROJECT DATA ⭐
+
 
     const grid = document.getElementById('projectsGrid');
 
-    // ⭐ NEW: Rendering Logic with Description and Buttons ⭐
+    // Rendering Logic
     works.forEach(w => {
         const tagsHtml = w.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
-        const allTags = w.tags.join(' '); // String of all tags for filtering
+        const allTags = w.tags.join(' ');
         const card = document.createElement('article');
         card.className = 'project-card';
-        card.setAttribute('data-tags', allTags); // Add data attribute for filtering
+        card.setAttribute('data-tags', allTags);
 
         card.innerHTML = `
             <div class="video-wrapper">
@@ -187,6 +366,7 @@ window.addEventListener("load", () => {
         `;
         grid.appendChild(card);
     });
+
     // Lazy load & hover play
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => {
@@ -202,22 +382,18 @@ window.addEventListener("load", () => {
     }, { rootMargin: "200px" });
     document.querySelectorAll('.project-card').forEach(c => observer.observe(c));
 
-    // ⭐ NEW: Filtering Logic ⭐
+    // Filtering Logic
     document.querySelectorAll('.filter-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const filter = e.target.dataset.filter;
 
-            // Remove 'active' from all buttons
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            // Add 'active' to the clicked button
             e.target.classList.add('active');
 
-            // Iterate over all project cards
             document.querySelectorAll('.project-card').forEach(card => {
                 const tags = card.dataset.tags.toLowerCase();
-                // Show if filter is 'all' OR if the card's tags contain the filter tag
                 if (filter === 'all' || tags.includes(filter.toLowerCase())) {
-                    card.style.display = 'block'; // Or 'grid' if using display: grid
+                    card.style.display = 'block'; 
                 } else {
                     card.style.display = 'none';
                 }
@@ -225,46 +401,33 @@ window.addEventListener("load", () => {
         });
     });
 
-    // === 6. Canvas Setup ===
+    // === 6. Background Canvas Setup and Animation ===
     const canvases = {
         particles: document.getElementById("particle-bg"),
         orbs: document.getElementById("bg-orbs"),
         mesh: document.getElementById("bg-mesh"),
         waves: document.getElementById("bg-waves")
     };
-    let width = window.innerWidth, height = window.innerHeight;
-    function resizeAll() { width = window.innerWidth; height = window.innerHeight; Object.values(canvases).forEach(c => { c.width = width; c.height = height; }); }
+    
+    function resizeAll() { 
+        width = window.innerWidth; 
+        height = window.innerHeight; 
+        Object.values(canvases).forEach(c => { c.width = width; c.height = height; }); 
+        resizeMorphCanvas();
+    }
     resizeAll();
     window.addEventListener("resize", resizeAll);
-    const [particleCtx, orbCtx, meshCtx, waveCtx] = Object.values(canvases).map(c => c.getContext("2d"));
+    const [particleCtx, orbCtx, meshCtx, waveCtx] = Object.values(canvases).map(c => c.getContext("2d")); 
 
-    // --- Adaptive particles, orbs & mesh ---
-    const PARTICLE_COUNT = Math.min(80, Math.floor(width * height / 20000)), LINK_DIST = 120;
-    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, size: Math.random() * 2 + 1.5 }));
+    // --- Adaptive orbs & mesh ---
     const ORB_COUNT = Math.min(8, Math.floor(width / 300));
     const orbs = Array.from({ length: ORB_COUNT }, () => ({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 60 + 50, alpha: Math.random() * 0.3 + 0.1, dx: (Math.random() - 0.5) * 0.2, dy: (Math.random() - 0.5) * 0.2 }));
     const GRID_SIZE = width > 1200 ? 60 : width > 800 ? 80 : 100;
     const meshPoints = []; for (let y = 0; y <= height; y += GRID_SIZE) for (let x = 0; x <= width; x += GRID_SIZE) meshPoints.push({ x: x + (Math.random() - 0.5) * 20, y: y + (Math.random() - 0.5) * 20 });
 
     // --- Drawing functions ---
-    function drawParticles() {
-        particleCtx.clearRect(0, 0, width, height);
-        const accent = getAccentRGBA();
-        for (let i = 0; i < particles.length; i++) {
-            const p = particles[i]; p.x += p.vx; p.y += p.vy;
-            if (p.x < 0) p.x = width; if (p.x > width) p.x = 0; if (p.y < 0) p.y = height; if (p.y > height) p.y = 0;
-            particleCtx.fillStyle = getAccentRGBA(0.95); particleCtx.shadowColor = accent; particleCtx.shadowBlur = 10;
-            particleCtx.beginPath(); particleCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); particleCtx.fill();
-            for (let j = i + 1; j < particles.length; j++) {
-                const q = particles[j], dx = p.x - q.x, dy = p.y - q.y, dist2 = dx * dx + dy * dy;
-                if (dist2 < LINK_DIST * LINK_DIST) { particleCtx.strokeStyle = getAccentRGBA(0.5 * (1 - Math.sqrt(dist2) / LINK_DIST)); particleCtx.lineWidth = 1; particleCtx.beginPath(); particleCtx.moveTo(p.x, p.y); particleCtx.lineTo(q.x, q.y); particleCtx.stroke(); }
-            }
-        }
-    }
-
     function drawOrbs() {
         orbCtx.clearRect(0, 0, width, height);
-        const accent = getAccentRGBA();
         orbs.forEach(o => {
             o.x += o.dx; o.y += o.dy; if (o.x < -o.r) o.x = width + o.r; if (o.x > width + o.r) o.x = -o.r; if (o.y < -o.r) o.y = height + o.r; if (o.y > height + o.r) o.y = -o.r;
             const grad = orbCtx.createRadialGradient(o.x, o.y, o.r * 0.2, o.x, o.y, o.r);
@@ -297,8 +460,13 @@ window.addEventListener("load", () => {
         waveTime += 0.02;
     }
 
-    // --- Animation Loop ---
-    function animateAll() { drawWaves(); drawMesh(); drawOrbs(); drawParticles(); requestAnimationFrame(animateAll); }
+    // --- Main Animation Loop ---
+    function animateAll() { 
+        drawMorphParticles(); 
+        drawWaves(); 
+        drawMesh(); 
+        drawOrbs(); 
+        requestAnimationFrame(animateAll); 
+    }
     animateAll();
 });
-
