@@ -636,17 +636,17 @@
       z-index: -1;
       /* optional if you want content above it */
     }
-    
+
     /* Add this to your CSS file */
-.animated-text {
-    /* Apply a smooth transition to opacity and transform */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    
-    /* Ensure the element is visible initially, or you might start with 
+    .animated-text {
+      /* Apply a smooth transition to opacity and transform */
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+      /* Ensure the element is visible initially, or you might start with 
        a quick transition on page load if the JS is fast. */
-    opacity: 1;
-    transform: translateY(0);
-}
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 
 </head>
@@ -692,9 +692,9 @@
     </div>
   </nav>
 
-  <section id="hero" style= "margin-top: 200px;>
+  <section id="hero" style="margin-top: 200px;">
     <canvas id="hero-canvas"></canvas>
-    <div class="hero-content container" ">
+    <div class="hero-content container">
       <h1>Building Digital Worlds<br>with Logic & Code.</h1>
       <p class="hero-subtitle">
         I am a <span style="color:var(--accent)" class="animated-text">Developer</span> creating efficient software,
