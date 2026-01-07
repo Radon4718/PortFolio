@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Physics", "Java", "Processing"],
                     src: "assets/fluid resistance simulator.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Fluid+Sim",
                     github: "https://github.com/Radon4718/Processing",
                     demo: ""
                 },
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Algorithms", "Java", "Data Structures"],
                     src: "assets/Algorithm Visualizer.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Path+Finder",
                     github: "https://github.com/Radon4718/Algorithm-Visualizer",
                     demo: ""
                 },
@@ -35,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Game Dev", "CPP", "System Design"],
                     src: "assets/game logic.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Game+Logic",
                     github: "",
                     demo: ""
                 },
@@ -45,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Java", "DataBase", "SQL"],
                     src: "assets/Quiz app.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Quiz+App",
                     github: "https://github.com/Radon4718/Quiz_App",
                     demo: ""
                 },
@@ -55,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Physics", "Simulation", "Java"],
                     src: "assets/gravitational pull simulator.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Gravity+Sim",
                     github: "https://github.com/Radon4718/Processing",
                     demo: ""
                 },
@@ -65,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Processing", "Simulation", "Java"],
                     src: "assets/repulsion simulation.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Repulsion",
                     github: "https://github.com/Radon4718/Processing",
                     demo: ""
                 },
@@ -75,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Java", "OOP", "Game Dev"],
                     src: "assets/Java Game.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=Java+RPG",
                     github: "https://github.com/Radon4718/PlatformerGameInJava-master",
                     demo: ""
                 },
@@ -85,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["HTML", "CSS", "JavaScript", "Web"],
                     src: "assets/PortFolio.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
                     github: "https://github.com/Radon4718/PortFolio",
                     demo: ""
                 },
@@ -95,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["Java", "Processing", "Logic Design"],
                     src: "assets/vid fish.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
                     github: "https://github.com/Radon4718/Processing",
                     demo: ""
                 },
@@ -105,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["HTTP", "Java", "Weather API", "Web"],
                     src: "assets/weather app.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
                     github: "https://github.com/Radon4718/Weather_Information_app",
                     demo: ""
                 },
@@ -115,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["HTTP", "Java", "API", "Web"],
                     src: "assets/web crawler.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
                     github: "",
                     demo: ""
                 },
@@ -125,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     type: 'video',
                     tags: ["GDScript", "Godot", "Game dev"],
                     src: "assets/Godot.mp4",
-                    poster: "https://placehold.co/600x400/1a1a1a/1db954?text=PortFolio",
                     github: "https://github.com/Radon4718/Godot_Enviroment_simuplation",
                     demo: ""
                 }
@@ -141,7 +129,38 @@ document.addEventListener("DOMContentLoaded", () => {
             this.initCursor(); // New Magnetic Cursor
             this.initProjects(); // Generates cards, then calls init3DTilt
             this.initScrollAnimations();
+            this.initTextScanner();
         },
+
+        initTextScanner() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const text = el.textContent;
+                        let i = 0;
+                        el.textContent = '';
+                        el.classList.add('scanning');
+
+                        const scanner = setInterval(() => {
+                            if (i < text.length) {
+                                el.textContent += text.charAt(i);
+                                i++;
+                            } else {
+                                el.classList.remove('scanning');
+                                clearInterval(scanner);
+                            }
+                        }, 50);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('[data-scan-text]').forEach(el => {
+                observer.observe(el);
+            });
+        },
+
 
         updateAccentColor() {
             this.state.accentColor = getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#10b981';
@@ -297,20 +316,21 @@ document.addEventListener("DOMContentLoaded", () => {
         initProjectMedia() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
+                    const v = e.target.querySelector('video');
+                    if (!v) return;
+
                     if (e.isIntersecting) {
-                        const v = e.target.querySelector('video');
-                        if (v && v.dataset.src) {
+                        if (v.dataset.src) {
                             v.src = v.dataset.src;
                             v.removeAttribute('data-src');
-                            observer.unobserve(e.target);
+                            v.load();
                         }
-                        if (v) {
-                            e.target.addEventListener('mouseenter', () => { if (v.readyState >= 2) v.play().catch(() => { }) });
-                            e.target.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
-                        }
+                        v.play().catch(() => {});
+                    } else {
+                        v.pause();
                     }
                 });
-            }, { rootMargin: "200px" });
+            }, { rootMargin: "0px", threshold: 0.5 }); // Using threshold for better play/pause timing
             document.querySelectorAll('.project-card').forEach(c => observer.observe(c));
         },
 

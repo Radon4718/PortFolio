@@ -58,7 +58,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Share Tech Mono', sans-serif;
   background: var(--bg);
   color: var(--text-main);
   line-height: 1.6;
@@ -72,7 +72,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'VT323', monospace;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-main);
@@ -86,6 +86,10 @@ a {
 
 button {
   font-family: inherit;
+}
+
+main {
+  display: block;
 }
 
 /* ===== CUSTOM MAGNETIC CURSOR ===== */
@@ -227,14 +231,27 @@ body.hovering #cursor-follower {
 
 /* ===== BACKGROUNDS ===== */
 #bg-fixed-gradient {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.05), transparent 40%),
-    radial-gradient(circle at bottom left, rgba(50, 50, 150, 0.05), transparent 40%);
-  z-index: -2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        linear-gradient(to bottom, transparent, var(--bg)),
+        linear-gradient(to right, var(--accent-dim) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--accent-dim) 1px, transparent 1px);
+    background-size: 100% 100%, 50px 50px, 50px 50px;
+    animation: scan 10s linear infinite;
+    z-index: -2;
+}
+
+@keyframes scan {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+    }
+    100% {
+        background-position: 0 0, 0 -100%, 0 0;
+    }
 }
 
 /* ===== LAYOUT & HERO ===== */
@@ -410,7 +427,7 @@ nav {
   align-items: center;
   justify-content: center;
   padding: 0.9rem 2rem;
-  border-radius: 12px;
+  border-radius: 0;
   font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -639,8 +656,32 @@ nav {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   padding: 1.5rem;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   transition: 0.3s;
+  position: relative;
+}
+
+.tech-category::before,
+.tech-category::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--accent);
+    border-style: solid;
+    transition: 0.3s;
+}
+
+.tech-category::before {
+    top: -5px;
+    left: -5px;
+    border-width: 2px 0 0 2px;
+}
+
+.tech-category::after {
+    bottom: -5px;
+    right: -5px;
+    border-width: 0 2px 2px 0;
 }
 
 .tech-category h3 {
@@ -695,7 +736,7 @@ nav {
   border: 1px solid var(--glass-border);
   color: var(--text-muted);
   padding: 8px 20px;
-  border-radius: 50px;
+  border-radius: 0;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -716,10 +757,45 @@ nav {
 .project-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.project-card::before,
+.project-card::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--accent);
+    border-style: solid;
+    transition: 0.3s;
+    opacity: 0;
+}
+
+.project-card:hover::before,
+.project-card:hover::after {
+    opacity: 1;
+}
+
+.project-card::before {
+    top: 10px;
+    left: 10px;
+    border-width: 2px 0 0 2px;
+}
+
+.project-card::after {
+    bottom: 10px;
+    right: 10px;
+    border-width: 0 2px 2px 0;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
 }
 
 .video-wrapper {
@@ -794,6 +870,7 @@ nav {
 
 .project-title {
   font-size: 1.25rem;
+  word-break: break-word;
 }
 
 .project-tags {
@@ -847,7 +924,7 @@ nav {
 .social-link {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 0;
   border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
@@ -962,6 +1039,25 @@ footer {
   transform: translateY(0);
 }
 
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--accent); }
+}
+
+.scanning::after {
+  content: '▋';
+  animation: blink-caret .75s step-end infinite;
+  color: var(--accent);
+  margin-left: 5px;
+}
+
+@media (min-width: 768px) {
+  .about-skills .tech-grid,
+  .tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 900px) {
   .hero-container {
     grid-template-columns: 1fr;
@@ -978,7 +1074,8 @@ footer {
   }
 
   .hero-visual {
-    display: none;
+    display: block;
+    margin-top: 4rem;
   }
 
   .about-content {
