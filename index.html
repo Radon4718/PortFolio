@@ -237,6 +237,28 @@
     </div>
   </footer>
 
+  <!-- Project Detail Modal -->
+  <div id="projectModal" class="project-modal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="modal-video-container">
+        <video id="modalVideo" controls playsinline muted></video>
+      </div>
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <div id="modalTags" class="modal-tags"></div>
+        <div id="modalDescription" class="modal-description"></div>
+        <div id="modalLinks" class="modal-links"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 
 </body>
