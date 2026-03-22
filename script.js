@@ -324,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
             this.initPreloader();
             this.initTheme();
             this.initBurgerMenu();
-            this.initCursor(); // New Magnetic Cursor
             this.initProjects(); // Generates cards, then calls init3DTilt
             this.initScrollAnimations();
             this.initTextScanner();
