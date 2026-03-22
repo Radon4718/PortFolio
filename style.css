@@ -1095,12 +1095,12 @@ footer {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  max-width: 900px;
-  width: 100%;
+  max-width: 1200px;
+  width: 95%;
   max-height: 90vh;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
   padding: 2rem;
   animation: modal-slide-in 0.3s ease-out;
