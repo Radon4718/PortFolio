@@ -10,6 +10,26 @@ document.addEventListener("DOMContentLoaded", () => {
         config: {
             projects: [
                 {
+                    title: "Autonomous 2D Survival Agent: Godot & PPO Integration",
+                    description: "A custom 2D survival simulation bridging real-time game rendering with a deep learning backend to train an autonomous Reinforcement Learning agent.",
+                    fullDescription: `<p><strong>Role:</strong> Software Engineer | <strong>Tech Stack:</strong> Godot Engine (GDScript), Python, Stable-Baselines3, Godot-RL Wrapper, PyTorch | <strong>Algorithms:</strong> Proximal Policy Optimization (PPO)</p>
+                    <p>Designed and developed a custom 2D survival simulation to train an autonomous Reinforcement Learning (RL) agent. The project bridges real-time game rendering with a deep learning backend, focusing heavily on under-the-hood system architecture, state normalization, and iterative reward shaping to achieve complex, continuous decision-making.</p>
+                    
+                    <p><strong>Key Engineering Contributions:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                    <li><strong>LIDAR-Inspired Vision System:</strong> Bypassed computationally expensive visual pixel processing by engineering a custom 16-point RayCast sensor array. The array detects obstacles, resource types, and distances, normalizing the output into a pure floating-point tensor (-1.0 to 1.0) injected directly into the neural network 60 times a second.</li>
+                    <li><strong>Continuous Action Space:</strong> Configured a MultiInputPolicy neural network (256x256 hidden layers) to output continuous, multi-variable actions. The agent calculates a 2D direction vector for precise movement angles and a continuous magnitude value for stamina conservation, rather than relying on discrete, grid-based inputs.</li>
+                    <li><strong>Algorithmic Training Pipeline:</strong> Automated the model training using the Proximal Policy Optimization (PPO) algorithm. Engineered a robust Python script to handle 500,000+ timesteps with continuous checkpointing and exception-handling failsafes to preserve the agent's brain state upon forced interruptions.</li>
+                    <li><strong>Advanced Reward Shaping:</strong> Solved complex behavioral alignment issues (the "King Midas" problem). When the model exploited a local optimum by standing completely still to endlessly farm stamina-conservation rewards while avoiding collision penalties, I engineered a counter-reward constraint. By tying positive rewards to the exploration of unvisited tiles, the agent was successfully forced to balance movement, resource gathering, and hazard avoidance.</li>
+                    <li><strong>Graphics & "Game Juice":</strong> Polished the environment using Godot's rendering engine, separating TileMapLayers to manipulate Light Masks. Added custom HDR glow, radial light fading, and GPUParticles2D for atmospheric world-building.</li>
+                    </ul>`,
+                    type: 'video',
+                    tags: ["AI", "Godot", "Python", "Algorithms", "Game Dev"],
+                    src: "assets/Ai_to_Game.mp4",
+                    github: "",
+                    demo: ""
+                },
+                {
                     title: "Fish Racer Game — Multiplayer",
                     description: "A high-speed procedurally generated 2D multiplayer runner with advanced networking, infinite terrain generation, and complex boss AI.",
                     fullDescription: `<p><strong>Lead Programmer & Technical Designer</strong> | Godot 4.x, GDScript, GLSL Shaders | PC / Mobile | In Development</p>
